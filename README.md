@@ -9,7 +9,7 @@ I don't want to deal with `git config user.name` etc. on multiple machines.
 ## Installation
 
 ```shell
-go install github.com/4thel00z/git-user@latest
+go install github.com/agent37-cloud/git-user@latest
 ```
 
 ## License
