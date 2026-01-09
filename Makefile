@@ -4,7 +4,7 @@ BINDIR := bin
 MAIN := ./cmd/$(APPNAME)/main.go
 .DEFAULT_GOAL := help
 
-.PHONY: all build run install fmt vet clean init help banner
+.PHONY: all build run install fmt vet test test-coverage test-coverage-html clean init help banner
 
 ### Build & Run
 build: ## Build the binary into ./bin/
@@ -25,14 +25,31 @@ fmt: ## Run go fmt on all sources
 vet: ## Run go vet on all sources
 	@go vet ./...
 
+### Testing
+test: ## Run all tests with race detection
+	@echo "\033[1;36mRunning tests...\033[0m"
+	@go test -v -race ./...
+
+test-coverage: ## Generate test coverage report
+	@echo "\033[1;36mGenerating coverage report...\033[0m"
+	@go test -coverprofile=coverage.out ./...
+	@go tool cover -func=coverage.out
+
+test-coverage-html: ## Generate HTML test coverage report
+	@echo "\033[1;36mGenerating HTML coverage report...\033[0m"
+	@go test -coverprofile=coverage.out ./...
+	@go tool cover -html=coverage.out -o coverage.html
+	@echo "\033[1;32mCoverage report: coverage.html\033[0m"
+
 ### Database Init
 init: build ## Bootstrap DB from current git config
 	@./$(BINDIR)/$(APPNAME) --init-db
 	@echo "\033[1;36mDatabase initialized from current git config ✅\033[0m"
 
 ### Cleanup
-clean: ## Remove built binaries
+clean: ## Remove built binaries and test artifacts
 	@rm -rf $(BINDIR)
+	@rm -f coverage.out coverage.html
 
 ### ASCII Banner (left-aligned)
 banner:

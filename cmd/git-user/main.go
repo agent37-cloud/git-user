@@ -43,6 +43,10 @@ func openStore() (*Store, error) {
 		return nil, err
 	}
 	dbPath := filepath.Join(dir, "users.sqlite3")
+	return createStore(dbPath)
+}
+
+func createStore(dbPath string) (*Store, error) {
 	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {
 		return nil, err
